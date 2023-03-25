@@ -150,6 +150,8 @@ static void CompileShaders()
 
 int main(int argc, char** argv)
 {
+    system("chcp 1251");
+
     glutInit(&argc, argv); // инициализируем GLUT
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); //(отрисовка будет происходить в фоновый буфер, в то время как другой буфер отображается)
     glutInitWindowSize(1024, 768);
