@@ -39,7 +39,7 @@ static void RenderSceneCB()
 
     static float Scale = 0.0f;
 
-    Scale += 0.001f;
+    Scale += 0.001f; //увелисиваем значение синуса
 
     Matrix4f World; // Матрица для перемещения
 
@@ -83,19 +83,22 @@ static void CreateVertexBuffer()
 
 static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
 {
-    GLuint ShaderObj = glCreateShader(ShaderType);
+    GLuint ShaderObj = glCreateShader(ShaderType); // создание шейдера
 
     if (ShaderObj == 0) {
         fprintf(stderr, "Error creating shader type %d\n", ShaderType);
         exit(0);
     }
 
+    // Исходный код шейдера
     const GLchar* p[1];
     p[0] = pShaderText;
     GLint Lengths[1];
     Lengths[0] = strlen(pShaderText);
     glShaderSource(ShaderObj, 1, p, Lengths);
-    glCompileShader(ShaderObj);
+
+    // Компилируем шейдер
+    glCompileShader(ShaderObj); 
     GLint success;
     glGetShaderiv(ShaderObj, GL_COMPILE_STATUS, &success);
     if (!success) {
@@ -105,25 +108,25 @@ static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum Shad
         exit(1);
     }
 
-    glAttachShader(ShaderProgram, ShaderObj);
+    glAttachShader(ShaderProgram, ShaderObj); // проверяем программу 
 }
 
 static void CompileShaders()
 {
-    GLuint ShaderProgram = glCreateProgram();
+    GLuint ShaderProgram = glCreateProgram(); //создание программного объекта
 
     if (ShaderProgram == 0) {
         fprintf(stderr, "Error creating shader program\n");
         exit(1);
     }
 
-    AddShader(ShaderProgram, pVS, GL_VERTEX_SHADER);
-    AddShader(ShaderProgram, pFS, GL_FRAGMENT_SHADER);
+    AddShader(ShaderProgram, pVS, GL_VERTEX_SHADER); // создаем шейдер
+    AddShader(ShaderProgram, pFS, GL_FRAGMENT_SHADER); // создаем шейдер
 
     GLint Success = 0;
     GLchar ErrorLog[1024] = { 0 };
 
-    glLinkProgram(ShaderProgram);
+    glLinkProgram(ShaderProgram); // создаем испольняемую программу и связываем шейдеры
     glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &Success);
     if (Success == 0) {
         glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
@@ -131,7 +134,7 @@ static void CompileShaders()
         exit(1);
     }
 
-    glValidateProgram(ShaderProgram);
+    glValidateProgram(ShaderProgram); // проверка корректности шейдерной программы
     glGetProgramiv(ShaderProgram, GL_VALIDATE_STATUS, &Success);
     if (!Success) {
         glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
@@ -139,7 +142,7 @@ static void CompileShaders()
         exit(1);
     }
 
-    glUseProgram(ShaderProgram);
+    glUseProgram(ShaderProgram); // устанавливает шейдерную программу для отрисовки
 
     gWorldLocation = glGetUniformLocation(ShaderProgram, "gWorld");
     assert(gWorldLocation != 0xFFFFFFFF);
@@ -166,7 +169,7 @@ int main(int argc, char** argv)
 
     CreateVertexBuffer(); // Создает буфер вершин
 
-    CompileShaders();
+    CompileShaders(); // шейдер
 
     glutMainLoop(); // Передаёт контроль GLUT'у
 
